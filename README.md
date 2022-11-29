@@ -1,4 +1,4 @@
-<h1>Project: MyReads - A book landing app</h1>
+<h1>Project: Would you rather</h1>
 <h2>This is a project in Udacity Course: React</h2>
 
 To clone or download project:
