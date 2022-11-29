@@ -1,34 +1,77 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import './App.css';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Route, Routes, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Layout } from 'antd';
 
-function App() {
-  const [count, setCount] = useState(0)
+import { auth, getUsers } from './redux/user.slice';
+import Nav from './components/Nav';
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+import LoginPage from './pages/Login';
+import Home from './pages/Home';
+import NewQuestion from './pages/NewQuestions';
+import LeaderBoard from './pages/LeaderBoard';
+import Answers from './pages/Answers';
+import Results from './pages/Results';
+import NotFound from './pages/NotFound';
+import { getQuestions } from './redux/question.slice';
+
+const { Header, Content, Footer, Sider } = Layout;
+
+const App = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
+
+  const users = useSelector((state) => state.users.all);
+  const user = users ? users.current : '';
+  const questions = useSelector((state) => state.questions.all);
+  useEffect(() => {
+    if (!users) { dispatch(getUsers()); }
+    if (!questions) { dispatch(getQuestions()); }
+    if (!user) {
+      const userID = localStorage.getItem('currentUser');
+      if (!userID) {
+        const routes = ['/', '/add', '/leaderboard'];
+        const pathName = location.pathname;
+        if (!routes.includes(pathName)) {
+          setTimeout(() => {
+            const currentPath = location.pathname;
+            if (currentPath !== '/login') { navigate('/login'); }
+          }, 5000);
+        } else {
+          const currentPathN = location.pathname;
+          if (currentPathN !== '/login') { navigate('/login'); }
+        }
+      } else {
+        dispatch(auth(userID));
+      }
+    }
+  }, [dispatch, location.pathname, navigate, questions, user, users]);
+
+  return <Layout>
+    {location.pathname !== '/login' ?
+      <Sider>
+        <Nav data={{ users, questions, user }} />
+      </Sider> : null
+    }
+    <Layout>
+      <Content style={{ padding: '20px 50px' }}>
+        <div className='site-layout-content'>
+          <Routes>
+            <Route exact path='/' element={<Home data={{ users, questions, user }} />} />
+            <Route exact path='/add' element={<NewQuestion />} />
+            <Route exact path='/leaderboard' element={<LeaderBoard />} />
+            <Route exact path='/questions/:id/answers' element={<Answers data={{ users, questions, user }} />} />
+            <Route exact path='/questions/:id/results' element={<Results data={{ users, questions, user }} />} />
+            <Route exact path='/login' element={<LoginPage data={{ users }} />} />
+            <Route path='*' element={<NotFound data={{ user }} />} />
+          </Routes>
+        </div>
+      </Content>
+      <Footer style={{ textAlign: 'center' }}>Created by lazyallday (Gia Khoa Tran)</Footer>
+    </Layout>
+  </Layout>;
 }
 
-export default App
+export default App;
