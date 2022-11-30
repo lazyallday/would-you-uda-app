@@ -2,7 +2,7 @@
 <h2>This is a project in Udacity Course: React</h2>
 
 To clone or download project:
-## `git clone https://github.com/lazyallday/would-you-uda-app.git`
+### `git clone https://github.com/lazyallday/would-you-uda-app.git`
 
 or download on (https://github.com/lazyallday/would-you-uda-app).
 
@@ -20,3 +20,7 @@ Open [http://localhost:3000/](http://localhost:3000/) to view it in your browser
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+
+## Author
+
+This project is developed by Gia Khoa Tran as a part of a Udacity program's learning path.
