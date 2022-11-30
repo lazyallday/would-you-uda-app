@@ -61,11 +61,11 @@ const Question = (props) => {
           title='Would you rather'
           description={
             <>
-              <Text>{optionOne.text}?</Text>
+              <Text italic>{optionOne.text}?</Text>
               <br />
               <Text>OR</Text>
               <br />
-              <Text>{optionTwo.text}?</Text>
+              <Text italic>{optionTwo.text}?</Text>
             </>
           }
         />
